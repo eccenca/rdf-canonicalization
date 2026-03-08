@@ -31,7 +31,7 @@ class IdentifierIssuer:
 class RdfCanonicalization:
     """RDF Canonicalization"""
 
-    def __init__(self, graph: Graph, max_run_time: int | None = None) -> None:
+    def __init__(self, graph: Graph, max_run_time: float | None = None) -> None:
         """Initialize the RDF normalization process.
 
         :param graph: an instance of rdflib.Graph containing the RDF data.
@@ -39,7 +39,7 @@ class RdfCanonicalization:
         @type graph: object
         """
         self.graph = graph
-        self.max_run_time: int | None = max_run_time
+        self.max_run_time: float | None = max_run_time
         self.blank_id_to_quad_set: defaultdict[rdflib.BNode, set[tuple]] = defaultdict(set)
         self.canon_issuer = IdentifierIssuer()
         self.hash_to_blank_id: defaultdict[str, set[rdflib.BNode]] = defaultdict(set)

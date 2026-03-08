@@ -1,4 +1,8 @@
 """RDF Canonicalization Example usage"""
+import rdflib
+from rdflib import Graph
+from graph_sign_and_verify_c4gai.graphsignature import hash_rdf
+from graph_sign_and_verify_c4gai.rdf_canonicalization import RdfCanonicalization
 
 if __name__ == "__main__":
     # file = "order-1.nt"
