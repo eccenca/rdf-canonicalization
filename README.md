@@ -5,6 +5,60 @@ Sign and verify your awesome Knowledge Graphs with eccenca Corporate Memory :-)
   
 [![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier] 
 
+## Usage
+
+### RDF Canonicalization (RDFC-1.0)
+
+`RdfCanonicalization` implements the [RDFC-1.0](https://www.w3.org/TR/rdf-canon/) dataset normalization algorithm, producing a canonical N-Triples string with deterministic blank node identifiers.
+
+```python
+import rdflib
+from graph_sign_and_verify_c4gai.rdf_canonicalization import RdfCanonicalization
+
+graph = rdflib.Graph()
+graph.parse("my_graph.ttl", format="turtle")
+
+normalizer = RdfCanonicalization(graph, max_run_time=5)
+canonical = normalizer.normalize  # sorted, deterministic N-Triples string
+print(canonical)
+```
+
+- `max_run_time` (optional): maximum seconds allowed before a `TimeoutError` is raised.
+- The `normalize` property runs the full pipeline and returns the canonical N-Triples string.
+
+### Graph Signing and Verification
+
+`graphsignature` provides a simpler canonicalization (sorted N-Triples) combined with RSA-PSS signing and verification.
+
+```python
+from rdflib import Graph
+from graph_sign_and_verify_c4gai.graphsignature import (
+    canonicalize_rdf,
+    hash_rdf,
+    generate_key_pair,
+    sign_hash,
+    verify_signature,
+)
+
+# Load an RDF graph
+graph = Graph()
+graph.parse("my_graph.nt")
+
+# Canonicalize and hash
+canonical = canonicalize_rdf(graph)
+rdf_hash = hash_rdf(canonical)
+
+# Generate an RSA-2048 key pair
+private_key, public_key = generate_key_pair()
+
+# Sign
+signature = sign_hash(private_key, rdf_hash)
+
+# Verify
+is_valid = verify_signature(public_key, rdf_hash, signature)
+print("Signature valid:", is_valid)
+```
+
 ## Development
 
 - Run [task](https://taskfile.dev/) to see all major development tasks.
